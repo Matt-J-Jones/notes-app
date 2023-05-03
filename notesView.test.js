@@ -12,8 +12,6 @@ describe('Page view', () => {
     document.body.innerHTML = fs.readFileSync('./index.html');
   });
 
-
-
   it('displays notes', () => {
 
     const model = new NotesModel();
@@ -48,6 +46,18 @@ describe('Page view', () => {
 
     view.clearNotes();
     expect(document.querySelectorAll('div').length).toBe(1);
+  });
 
+  it('Inputs new note using form', () => {
+    const model = new NotesModel();
+    const view = new NotesView(model);
+
+    const inputEl = document.querySelector('#note-input');
+    const buttonEl = document.querySelector('#post-note-button');
+    inputEl.value = 'Hello'
+    buttonEl.click();
+
+    expect(document.querySelector('.note')).not.toBeNull();
+    expect(document.querySelector('.note').textContent).toEqual('Hello');
   });
 });
