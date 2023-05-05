@@ -21,9 +21,11 @@ class NotesView {
     this.displayNotes();
   }
 
-  displayNotesFromApi() {
-    this.client.loadNotes((data) => {
+  async displayNotesFromApi() {
+    await this.client.loadNotes((data) => {
+      console.log(`Data: ${data}`)
       this.notes.setNotes(data);
+      console.log(`notes: ${this.notes.getNotes()}`)
       this.displayNotes();
     });
   }

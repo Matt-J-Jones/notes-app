@@ -6,14 +6,14 @@ const fs = require('fs');
 const NotesView = require('./notesView');
 const NotesModel = require('./notesModel');
 const NotesClient = require('./notesClient');
-
+require('jest-fetch-mock').enableMocks()
 
 
 describe('Page view', () => {
 
   beforeEach(() => {
     document.body.innerHTML = fs.readFileSync('./index.html');
-    // fetch.resetMocks();
+    fetch.resetMocks();
   });
 
   it('displays notes', () => {
@@ -65,20 +65,56 @@ describe('Page view', () => {
     expect(document.querySelector('.note').textContent).toEqual('Hello');
   });
 
-  // it('Imports notes from api', async () => {
+  it('Should display mock response', () => {
+    const notes = ['Test note 1', 'Test note 2'];
+    const model = new NotesModel();
+    model.setNotes(notes);
+    const apiData = { Data: notes };
+    const client = new NotesClient(apiData);
+
+    const view = new NotesView(model, client);
+
+    view.displayNotes();
+
+    expect(document.querySelector('.note')).not.toBeNull();
+    expect(document.querySelector('.note').textContent).toEqual('Test note 1');
+  });
+
+  it('Imports notes from api', () => {
+    const model = new NotesModel();
+    const client = new NotesClient();
     
-  //   const model = new NotesModel();
-  //   const client = new NotesClient();
-  //   const view = new NotesView(model, client);
-    
-  //   fetch.mockResponseOnce(JSON.stringify({
-  //     content: ['test post']
-  //   }));
 
-  //   await view.displayNotesFromApi();
+    const doubleNotesModel = {
+      notes: ['Test Post'],
+      getNotes: () => { return ['Test Post'] },
+      setNotes: (newNotes) => { notes = newNotes },
+      addNote: (noteToAdd) => { notes.push(noteToAdd) },
+      reset: () => { notes = [] } 
+    }
+  
+    const mockResponse = {
+      notes: [
+        'This note is coming from the server',
+        'This is a second note coming from the server',
+        'And a third!',
+      ],
+    };
+  
+    fetch.mockResponseOnce(
+      JSON.stringify({
+        notes: [
+          'This note is coming from the server',
+          'This is a second note coming from the server',
+          'And a third!',
+        ],
+      })
+    );
 
-  //   expect(document.querySelector('.note')).not.toBeNull();
-  //   expect(document.querySelector('.note').textContent).toEqual('Hello');
-
-  // })
+    const view = new NotesView(doubleNotesModel, client);
+    view.displayNotesFromApi().then(() => {
+      expect(document.querySelector('.note')).not.toBeNull();
+      expect(document.querySelector('.note').textContent).toEqual('Test Post');
+    })
+  });
 });
