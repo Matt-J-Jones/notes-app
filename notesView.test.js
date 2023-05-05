@@ -5,11 +5,15 @@
 const fs = require('fs');
 const NotesView = require('./notesView');
 const NotesModel = require('./notesModel');
+const NotesClient = require('./notesClient');
+
+
 
 describe('Page view', () => {
 
   beforeEach(() => {
     document.body.innerHTML = fs.readFileSync('./index.html');
+    // fetch.resetMocks();
   });
 
   it('displays notes', () => {
@@ -60,4 +64,21 @@ describe('Page view', () => {
     expect(document.querySelector('.note')).not.toBeNull();
     expect(document.querySelector('.note').textContent).toEqual('Hello');
   });
+
+  // it('Imports notes from api', async () => {
+    
+  //   const model = new NotesModel();
+  //   const client = new NotesClient();
+  //   const view = new NotesView(model, client);
+    
+  //   fetch.mockResponseOnce(JSON.stringify({
+  //     content: ['test post']
+  //   }));
+
+  //   await view.displayNotesFromApi();
+
+  //   expect(document.querySelector('.note')).not.toBeNull();
+  //   expect(document.querySelector('.note').textContent).toEqual('Hello');
+
+  // })
 });

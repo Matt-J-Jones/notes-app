@@ -1,21 +1,19 @@
 const NotesModel = require('./notesModel');
+const NotesClient = require('./notesClient');
 
 class NotesView {
-  constructor(notesModel) {
-    this.inputFormEl = document.querySelector('#note-input')
-    this.postButtonEl = document.querySelector('#post-note-button');
-    // this.clearButtonEl = document.querySelector('#clear-notes-button');
-    this.mainContainerEl = document.querySelector('#main-container');
+  constructor(notesModel, notesClient) {
     this.notes = notesModel;
-
+    this.client = notesClient;
+    
+    this.inputFormEl = document.querySelector('#note-input');
+    this.postButtonEl = document.querySelector('#post-note-button');
+    this.mainContainerEl = document.querySelector('#main-container');
+    
     this.postButtonEl.addEventListener('click', () => {
       this.newNote(this.inputFormEl.value);
       this.inputFormEl.value = "";
     });
-
-  //   this.clearButtonEl.addEventListener('click', () => {
-  //     this.clearNotes();
-  //  });
   }
 
   newNote(text) {
@@ -23,10 +21,17 @@ class NotesView {
     this.displayNotes();
   }
 
+  displayNotesFromApi() {
+    this.client.loadNotes((data) => {
+      this.notes.setNotes(data);
+      this.displayNotes();
+    });
+  }
+
   displayNotes() {
     this.clearNotes();
 
-    this.notes.getNotes().reverse().forEach(note => {
+    this.notes.getNotes().forEach(note => {
       let div = document.createElement('div');
       div.textContent = note;
       div.classList.add("note")
