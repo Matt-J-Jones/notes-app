@@ -93,14 +93,6 @@ describe('Page view', () => {
       reset: () => { notes = [] } 
     }
   
-    const mockResponse = {
-      notes: [
-        'This note is coming from the server',
-        'This is a second note coming from the server',
-        'And a third!',
-      ],
-    };
-  
     fetch.mockResponseOnce(
       JSON.stringify({
         notes: [
