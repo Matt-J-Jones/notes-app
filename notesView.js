@@ -11,8 +11,10 @@ class NotesView {
     this.mainContainerEl = document.querySelector('#main-container');
     
     this.postButtonEl.addEventListener('click', () => {
-      this.newNote(this.inputFormEl.value);
+      const noteToSend = { body: this.inputFormEl.value };
+      this.client.createNote(noteToSend);
       this.inputFormEl.value = "";
+      this.displayNotes();
     });
   }
 
